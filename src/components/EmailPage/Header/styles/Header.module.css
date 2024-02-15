@@ -1,0 +1,49 @@
+.container {
+  height: 90px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid #f5f5f5;
+}
+
+.side {
+  margin: 0 10px;
+  display: flex;
+  align-items: center;
+}
+
+.side > img {
+  height: 90px;
+  -o-object-fit: contain;
+  object-fit: contain;
+}
+
+.middle {
+  height: 55px;
+  padding: 10px;
+  display: flex;
+  flex: 0.7;
+  align-items: center;
+  background-color: #f5f5f5;
+  border-radius: 5px;
+  overflow: hidden;
+}
+
+.middle > input {
+  width: 100%;
+  padding: 10px;
+  background-color: transparent;
+  border: none;
+  outline: none;
+  font-size: medium;
+}
+
+.relative {
+  position: relative;
+}
+
+@media (max-width: 768px) {
+  .middle {
+    display: none;
+  }
+}

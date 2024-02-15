@@ -1,0 +1,23 @@
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu',
+    'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.App {
+  width: 100vw;
+  min-height: 100vh;
+}
+
+.scroll {
+  overflow-y: scroll;
+}
+.scroll::-webkit-scrollbar {
+  display: none;
+}
+/*
+  .scroll::-webkit-scrollbar-track {}
+  .scroll::-webkit-scrollbar-button {}
+  .scroll::-webkit-scrollbar-thumb {} 
+*/

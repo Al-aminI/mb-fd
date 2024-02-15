@@ -1,0 +1,48 @@
+.item {
+  height: 40px;
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  border-radius: 0 20px 20px 0;
+  color: #ffffff;
+  cursor: pointer;
+}
+
+.item > svg {
+  padding: 5px;
+}
+
+.item > h3 {
+  margin-left: 10px;
+  flex: 1;
+  font-size: 14px;
+  font-weight: 400;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.item > p {
+  display: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.item:hover,
+.item:hover > h3,
+.item:hover > p,
+.active,
+.active > h3,
+.active > p {
+  background-color: #effcec;
+  color: #42c037;
+  font-weight: 700 !important;
+}
+
+.item:hover > p,
+.active > p {
+  display: inline !important;
+}

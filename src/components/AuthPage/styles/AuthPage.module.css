@@ -1,0 +1,41 @@
+.page {
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  /* justify-content: center; */
+}
+
+.page > img {
+  width: 350px;
+  margin-top: 69px;
+  margin-bottom: 42px;
+}
+
+.link {
+  margin-bottom: 20px;
+  background-color: transparent;
+  border: none;
+  color: #1e6df6;
+  font-size: 12px;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.link:hover {
+  font-weight: 500;
+}
+
+.page > p {
+  margin: auto 0 7px auto;
+  color: #808080;
+  text-align: center;
+  font-size: 12px;
+}
+
+@media (max-width: 768px) {
+  .page > img {
+    width: 290px;
+  }
+}
