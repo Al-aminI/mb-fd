@@ -50,8 +50,25 @@ export const getEmailsAction = () => async (dispatch, getState) => {
 
 export const sendEmailAction = (form) => async (dispatch, getState) => {
   dispatch({ type: SEND_EMAIL_REQUEST });
+
+   // Create a new FormData instance
+   const formData = new FormData();
+  
+   // Append each property of the form object to the FormData instance
+   for (const key in form) {
+     if (Array.isArray(form[key])) {
+       // If the property is an array (like the attachments), append each item
+       form[key].forEach((item) => {
+         formData.append(key, item);
+       });
+     } else {
+       // Otherwise, just append the property
+       formData.append(key, form[key]);
+     }
+   }
+
   try {
-    const response = await sendEmail(getState().userReducer.token, form);
+    const response = await sendEmail(getState().userReducer.token, formData);
     dispatch({ type: FETCH_EMAILS_SUCCESS, payload: response.data.email });
   } catch (error) {
     dispatch({ type: FETCH_EMAILS_ERROR, error });

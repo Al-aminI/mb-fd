@@ -19,24 +19,29 @@ function ComposeMail({ toggleIsCompose, composeDraft }) {
       to: composeDraft?.to || '',
       subject: composeDraft?.subject || '',
       message: composeDraft?.message || '',
+      // attachment: composeDraft?.attachment || [],
     },
   });
 
   // The following references purposes are to "pull" the form data from the useForm hook,
   // and used whenever the message will be saved as a draft
-  const from = useRef({});
-  const to = useRef({});
-  const subject = useRef({});
-  const message = useRef({});
-  from.current = watch('from', '');
-  to.current = watch('to', '');
-  subject.current = watch('subject', '');
-  message.current = watch('message', '');
+  // const from = useRef({});
+  // const to = useRef({});
+  // const subject = useRef({});
+  // const message = useRef({});
+  // const attachment = useRef([]);
+  // attachment = watch('attachment', []);
+  // from.current = watch('from', '');
+  // to.current = watch('to', '');
+  // subject.current = watch('subject', '');
+  // message.current = watch('message', '');
+ 
 
   // the following function sends the message
   // (the server also creates a random reply to be received by the user)
   const onSubmit = async (values) => {
-    
+    values.attachment = Array.from(values.attachment || []);
+
     if (!composeDraft) {
       
       dispatch(sendEmailAction(values));
@@ -45,9 +50,11 @@ function ComposeMail({ toggleIsCompose, composeDraft }) {
       // then the email is sent, and the draft is updated too!
       dispatch(sendEmailAction(values));
       let form = {
-        to: to.current,
-        subject: subject.current,
-        message: message.current,
+        from: watch('from'),
+        to: watch('to'),
+        subject: watch('subject'),
+        message: watch('message'),
+        attachment: Array.from(watch('attachment') || []),
       };
       dispatch(updateDraftAction(composeDraft.id, form));
     }
@@ -55,30 +62,27 @@ function ComposeMail({ toggleIsCompose, composeDraft }) {
   };
 
   const onClose = () => {
+    let form = {
+      from: watch('from'),
+      to: watch('to'),
+      subject: watch('subject'),
+      message: watch('message'),
+      attachment: Array.from(watch('attachment') || []),
+    };
     if (!composeDraft) {
       // the following is used to save a message as draft
       // (only if one of the fields are not empty)
-      if (to.current !== '' || subject.current !== '' || message.current !== '') {
-        let form = {
-          from: from.current,
-          to: to.current,
-          subject: subject.current,
-          message: message.current,
-        };
+      if (form.to !== '' || form.subject !== '' || form.message !== '') {
         dispatch(saveDraftAction(form));
       }
     } else {
       // the following is used to update the existing draft
-      let form = {
-        to: to.current,
-        subject: subject.current,
-        message: message.current,
-      };
       dispatch(updateDraftAction(composeDraft.id, form));
     }
     toggleIsCompose();
   };
-
+  
+ 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className={styles.compose}>
       <div className={styles.header}>
@@ -133,10 +137,19 @@ function ComposeMail({ toggleIsCompose, composeDraft }) {
           required: true,
         })}
       />
-
+      <div className={styles.inpGroup}>
+        <label htmlFor='attachment'>Attachment:</label>
+        <input
+          name='attachment'
+          id='attachment'
+          type='file'
+          ref={register}
+          multiple
+        />
+      </div>
       <div className={styles.send}>
         <Button type='submit'>Send</Button>
-
+        <br /> <br />
         <span>
           <p>{errors.to?.type === 'required' && 'Recipient is required'}</p>
           <p>{errors.to?.type === 'pattern' && 'Invalid email'}</p>
@@ -144,7 +157,9 @@ function ComposeMail({ toggleIsCompose, composeDraft }) {
           <p>{errors.message?.type === 'required' && 'Email message is required'}</p>
         </span>
       </div>
-    </form>
+      <br /> <br />
+     </form>
+     
   );
 }
 
