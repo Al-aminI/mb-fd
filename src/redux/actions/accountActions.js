@@ -45,7 +45,7 @@ export const getUserAction = () => async (dispatch, getState) => {
   dispatch({ type: FETCH_USER_REQUEST });
   try {
     const response = await getUser(getState().userReducer.token);
-    dispatch({ type: FETCH_USER_SUCCESS, payload: response.data.user });
+    dispatch({ type: FETCH_USER_SUCCESS, payload: response.data });
   } catch (error) {
     dispatch({ type: FETCH_USER_ERROR, error: error.response.data.message });
   }

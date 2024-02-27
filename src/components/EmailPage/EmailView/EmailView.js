@@ -11,7 +11,6 @@ import EmailOptions, {
 } from "../EmailOptions/EmailOptions";
 import { Avatar } from "@material-ui/core";
 
-
 export default function EmailView({ inbox, sent, drafts, starred, trash }) {
   const dispatch = useDispatch();
   const { category, id } = useParams();
@@ -43,19 +42,16 @@ export default function EmailView({ inbox, sent, drafts, starred, trash }) {
         break;
     }
   });
-  
 
   // this side effect marks the email as read (if it wasn't already marked as read)
   // console.log("--------",emailToDisplay);
   useEffect(() => {
-    if (!emailToDisplay?.read)
-        dispatch(markAsReadAction(parseInt(id)));
-  }, 
-  [dispatch, emailToDisplay, parseInt(id)]);
- 
+    if (!emailToDisplay?.read) dispatch(markAsReadAction(parseInt(id)));
+  }, [dispatch, emailToDisplay, parseInt(id)]);
+
   return (
     <Fragment>
-      <EmailOptions>
+      <EmailOptions >
         <GoBack />
         <PlaceTrash id={parseInt(id)} isInTrash={category === "trash"} />
         {category === "trash" ? <Delete /> : <MarkUnread id={parseInt(id)} />}
@@ -71,6 +67,21 @@ export default function EmailView({ inbox, sent, drafts, starred, trash }) {
               to me
             </div>
             <p dangerouslySetInnerHTML={{ __html: emailToDisplay.message }}></p>
+            {emailToDisplay?.attachments?.length > 0 && (
+              <div className={styles.attachments}>
+                <h4>Attachments:</h4>
+                {emailToDisplay.attachments.map((attachmentUrl, index) => (
+                  <a
+                    key={index}
+                    href={"https://mlbe.onrender.com/pdf/"+attachmentUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    Attachment {index + 1}
+                  </a>
+                ))}
+              </div>
+            )}
           </div>
         </div>
       ) : (

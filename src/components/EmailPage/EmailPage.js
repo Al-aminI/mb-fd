@@ -2,6 +2,7 @@ import { Fragment, useState, useEffect } from "react";
 import { Route } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { getEmailsAction } from "../../redux/actions/emailActions";
+import { getUserAction } from "../../redux/actions/accountActions";
 import styles from "./styles/EmailPage.module.css";
 import Header from "./Header/Header";
 import Sidebar from "./Sidebar/Sidebar";
@@ -21,6 +22,11 @@ export default function EmailPage() {
   // this gets all emails linked to the user, upon mount
   useEffect(() => {
     dispatch(getEmailsAction());
+  }, [dispatch]);
+
+   // this gets all emails linked to the user, upon mount
+   useEffect(() => {
+    dispatch(getUserAction());
   }, [dispatch]);
 
   // this sorts all the emails by categories and time,

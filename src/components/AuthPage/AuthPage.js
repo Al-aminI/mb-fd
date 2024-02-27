@@ -7,7 +7,7 @@ import FormRegister from './Form/FormRegister';
 
 export default function AuthPage() {
   const { user, isLoading, error } = useSelector((state) => state.userReducer);
-
+  console.log(user.email);
   // defines if the register or login form is displayed
   const [isCreateNew, setIsCreateNew] = useState(false);
   const toggleIsCreateNew = () => setIsCreateNew(!isCreateNew);
@@ -45,7 +45,7 @@ export default function AuthPage() {
       )}
 
       <p>
-        this NMFB , all accounts are stored in a database
+        this is NMFB , all accounts are stored in a database
       </p>
     </div>
   );
