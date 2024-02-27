@@ -71,7 +71,7 @@ export default function EmailView({ inbox, sent, drafts, starred, trash }) {
               <div className={styles.attachments}>
                 <h4>Attachments:</h4>
                 {emailToDisplay.attachments.map((attachmentUrl, index) => (
-                  &nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;<a
+                  <a
                     key={index}
                     href={"https://mlbe.onrender.com/pdf/"+attachmentUrl}
                     target="_blank"
