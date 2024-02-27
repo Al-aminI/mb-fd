@@ -76,9 +76,10 @@ export default function EmailView({ inbox, sent, drafts, starred, trash }) {
                     href={"https://mlbe.onrender.com/pdf/"+attachmentUrl}
                     target="_blank"
                     rel="noopener noreferrer"
+                    style={{ marginRight: '10px' }}
                   >
                     Attachment {index + 1}
-                  </a> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+                  </a>
                 ))}
               </div>
             )}
