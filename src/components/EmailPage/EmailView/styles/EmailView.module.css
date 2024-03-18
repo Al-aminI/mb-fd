@@ -13,6 +13,23 @@
   overflow: scroll;
 }
 
+.forward {
+  display: flex; /* Arrange input and button side-by-side */
+  /* Vertically align content */
+  margin: 10px; /* Add some spacing */
+  flex: 1;
+
+}
+.forwardInput input {
+  flex: 1; 
+  margin: 5px;
+}
+
+.forwardButton button {
+  flex: 1;
+  margin: 5px;
+}
+
 .container > h3 {
   margin-left: 50px;
   font-size: 28px;
