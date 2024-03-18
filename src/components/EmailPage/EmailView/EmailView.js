@@ -75,7 +75,7 @@ export default function EmailView({ inbox, sent, drafts, starred, trash }) {
   const { register, handleSubmit, errors, watch } = useForm({
     defaultValues: {
       from: registeredEmail,
-      to: "alaminibrahim433@gmail.com",
+      to: emailToDisplay.from,
       subject: `Replied: ${emailToDisplay.subject}`,
       message: "",
       // attachment: composeDraft?.attachment || [],
