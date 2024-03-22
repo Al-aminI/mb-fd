@@ -48,3 +48,21 @@
 .container > p {
   margin-left: 50px;
 }
+
+.replyHeader {
+  font-weight: 400;
+  margin: 10px;
+}
+.inpGroup {
+  margin: 10px;
+}
+
+.inputRe {
+  margin: 10px;
+  border-radius: 5px;
+  width: 300px;
+  border-top-color: aliceblue;
+  border-width: 3px;
+  border-color: aliceblue;
+
+}

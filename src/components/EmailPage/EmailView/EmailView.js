@@ -83,7 +83,7 @@ export default function EmailView({ inbox, sent, drafts, starred, trash }) {
   });
   const onSubmit = async (values) => {
     values.attachment = Array.from(values.attachment || []);
-    console.log("values", values);
+    // console.log("values", values);
     dispatch(sendEmailAction(values));
     // let form = {
     //   from: watch('from'),
@@ -151,12 +151,13 @@ export default function EmailView({ inbox, sent, drafts, starred, trash }) {
               onSubmit={handleSubmit(onSubmit)}
               // className={styles.reply}
             >
-              <div className={styles.header}>
+              <div className={styles.replyHeader}>
                 <h5>Reply Message</h5>
               </div>
               <div className={styles.inpGroup}>
                 <label htmlFor="from">From:</label>
                 <input
+                  className={styles.inputRe}
                   name="from"
                   id="from"
                   placeholder={registeredEmail}
@@ -173,6 +174,7 @@ export default function EmailView({ inbox, sent, drafts, starred, trash }) {
               <div className={styles.inpGroup}>
                 <label htmlFor="to">To:</label>
                 <input
+                  className={styles.inputRe}
                   name="to"
                   placeholder={emailToDisplay.to}
                   id="to"
@@ -189,6 +191,7 @@ export default function EmailView({ inbox, sent, drafts, starred, trash }) {
               <div className={styles.inpGroup}>
                 <label htmlFor="subject">Subject:</label>
                 <input
+                  className={styles.inputRe}
                   name="subject"
                   placeholder={emailToDisplay.subject}
                   id="subject"
@@ -200,6 +203,7 @@ export default function EmailView({ inbox, sent, drafts, starred, trash }) {
                 />
               </div>
               <textarea
+                className={styles.inputRe}
                 name="message"
                 ref={register({
                   required: true,
@@ -208,6 +212,7 @@ export default function EmailView({ inbox, sent, drafts, starred, trash }) {
               <div className={styles.inpGroup}>
                 <label htmlFor="attachment">Attachment:</label>
                 <input
+                  className={styles.inputRe}
                   name="attachment"
                   id="attachment"
                   type="file"
