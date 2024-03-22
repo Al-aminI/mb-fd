@@ -8,9 +8,11 @@ import {
 import { useForm } from 'react-hook-form';
 import { Button } from '@material-ui/core';
 import styles from './styles/ComposeMail.module.css';
+import { toast } from 'react-hot-toast';
+
 
 function ComposeMail({ toggleIsCompose, composeDraft }) {
-  
+ 
   const dispatch = useDispatch();
   const registeredEmail = useSelector((state) => state.userReducer.user.email);
   const { register, handleSubmit, errors, watch } = useForm({
@@ -44,11 +46,23 @@ function ComposeMail({ toggleIsCompose, composeDraft }) {
 
     if (!composeDraft) {
       
-      dispatch(sendEmailAction(values));
+      try {
+        await dispatch(sendEmailAction(values));
+        toast.success('Email sent successfully!');
+      } catch (error) {
+        console.error('Error sending email:', error);
+        toast.error('Failed to sending email!');
+      }
     } else {
       // but if the component was called by clicking on a draft,
       // then the email is sent, and the draft is updated too!
-      dispatch(sendEmailAction(values));
+      try {
+        await dispatch(sendEmailAction(values));
+        toast.success('Email sent successfully!');
+      } catch (error) {
+        console.error('Error sending email:', error);
+        toast.error('Failed to send email!');
+      }
       let form = {
         from: watch('from'),
         to: watch('to'),
@@ -74,10 +88,20 @@ function ComposeMail({ toggleIsCompose, composeDraft }) {
       // (only if one of the fields are not empty)
       if (form.to !== '' || form.subject !== '' || form.message !== '') {
         dispatch(saveDraftAction(form));
+        
+        // toast({
+        //   variant: "destructive",
+        //   title: "email saved as draft.",
+        // });
       }
     } else {
       // the following is used to update the existing draft
       dispatch(updateDraftAction(composeDraft.id, form));
+    
+      // toast({
+      //     variant: "destructive",
+      //     title: "email updated as draft.",
+      //   });
     }
     toggleIsCompose();
   };

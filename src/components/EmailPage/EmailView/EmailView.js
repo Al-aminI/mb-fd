@@ -13,8 +13,10 @@ import { Avatar } from "@material-ui/core";
 import { sendEmailAction } from "../../../redux/actions/emailActions";
 import { useForm } from "react-hook-form";
 import { Button } from "@material-ui/core";
+import { toast } from 'react-hot-toast';
 
 export default function EmailView({ inbox, sent, drafts, starred, trash }) {
+
   const dispatch = useDispatch();
   const { category, id } = useParams();
   const registeredEmail = useSelector((state) => state.userReducer.user.email);
@@ -68,9 +70,15 @@ export default function EmailView({ inbox, sent, drafts, starred, trash }) {
       attachment: emailToDisplay.attachment, // Optional: Allow user to specify an attachment
       message: emailToDisplay.message,
     };
-    dispatch(sendEmailAction(forwardData));
-    // Trigger modal or navigate to ComposeMail component with forwardData
-    // (Implementation depends on your application structure)
+    // dispatch(sendEmailAction(forwardData));
+    try {
+      dispatch(sendEmailAction(forwardData));
+      toast.success('Email forwarded successfully!');
+    } catch (error) {
+      console.error('Error forwarding email:', error);
+      toast.error('Failed to forward email!'); // Use toast.error() for error notifications
+    }
+   
   };
   const { register, handleSubmit, errors, watch } = useForm({
     defaultValues: {
@@ -85,6 +93,13 @@ export default function EmailView({ inbox, sent, drafts, starred, trash }) {
     values.attachment = Array.from(values.attachment || []);
     // console.log("values", values);
     dispatch(sendEmailAction(values));
+    try {
+      await dispatch(sendEmailAction(values));
+      toast.success('Email replied successfully!');
+    } catch (error) {
+      console.error('Error replyinging email:', error);
+      toast.error('Failed to reply email!'); // Use toast.error() for error notifications
+    }
     // let form = {
     //   from: watch('from'),
     //   to: watch('to'),
@@ -147,6 +162,7 @@ export default function EmailView({ inbox, sent, drafts, starred, trash }) {
               </div>
             )}
             <br />
+            <div className={styles.formCont}>
             <form
               onSubmit={handleSubmit(onSubmit)}
               // className={styles.reply}
@@ -203,10 +219,12 @@ export default function EmailView({ inbox, sent, drafts, starred, trash }) {
                 />
               </div>
               <textarea
+                placeholder="type your reply here..."
                 className={styles.inputRe}
                 name="message"
                 ref={register({
                   required: true,
+                
                 })}
               />
               <div className={styles.inpGroup}>
@@ -240,6 +258,7 @@ export default function EmailView({ inbox, sent, drafts, starred, trash }) {
               </div>
               <br /> <br />
             </form>
+            </div>
           </div>
         </div>
       ) : (

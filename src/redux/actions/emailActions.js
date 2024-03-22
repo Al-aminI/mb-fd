@@ -68,7 +68,7 @@ export const sendEmailAction = (form) => async (dispatch, getState) => {
        formData.append(key, form[key]);
      }
    }
-
+   
   try {
     const response = await sendEmail(getState().userReducer.token, formData);
     dispatch({ type: FETCH_EMAILS_SUCCESS, payload: response.data.email });
