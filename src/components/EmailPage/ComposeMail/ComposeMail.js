@@ -1,4 +1,4 @@
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   sendEmailAction,
@@ -8,11 +8,12 @@ import {
 import { useForm } from 'react-hook-form';
 import { Button } from '@material-ui/core';
 import styles from './styles/ComposeMail.module.css';
-import { toast } from 'react-hot-toast';
+import  toast, { Toaster } from 'react-hot-toast';
+import { ClipLoader } from 'react-spinners';
 
 
 function ComposeMail({ toggleIsCompose, composeDraft }) {
- 
+  const [isSending, setIsSending] = useState(false);
   const dispatch = useDispatch();
   const registeredEmail = useSelector((state) => state.userReducer.user.email);
   const { register, handleSubmit, errors, watch } = useForm({
@@ -47,21 +48,52 @@ function ComposeMail({ toggleIsCompose, composeDraft }) {
     if (!composeDraft) {
       
       try {
+        setIsSending(true);
         await dispatch(sendEmailAction(values));
-        toast.success('Email sent successfully!');
+        toast.success('Email sent successfully!', {
+          position: "top-left", // Adjust position as needed
+          autoClose: 10000, // Close toast after 5 seconds
+          hideProgressBar: true, // Hide progress bar
+          closeOnClick: true, // Close toast on click
+          duration: 5000, //
+        });
       } catch (error) {
         console.error('Error sending email:', error);
-        toast.error('Failed to sending email!');
+        toast.error('Failed to sending email!', {
+          position: "top-left", // Adjust position as needed
+          autoClose: 10000, // Close toast after 5 seconds
+          hideProgressBar: true, // Hide progress bar
+          closeOnClick: true, // Close toast on click
+          duration: 5000, //
+        });
       }
+    finally {
+      setIsSending(false); // Hide spinner after sending ends
+    }
     } else {
       // but if the component was called by clicking on a draft,
       // then the email is sent, and the draft is updated too!
       try {
+        setIsSending(true);
         await dispatch(sendEmailAction(values));
-        toast.success('Email sent successfully!');
+        toast.success('Email sent successfully!', {
+          position: "top-left", // Adjust position as needed
+          autoClose: 10000, // Close toast after 5 seconds
+          hideProgressBar:  false, // Hide progress bar
+          closeOnClick: true, // Close toast on click
+          duration: 5000, //
+        });
       } catch (error) {
         console.error('Error sending email:', error);
-        toast.error('Failed to send email!');
+        toast.error('Failed to send email!', {
+          position: "top-left", // Adjust position as needed
+          autoClose: 10000, // Close toast after 5 seconds
+          hideProgressBar:  false, // Hide progress bar
+          closeOnClick: true, // Close toast on click
+          duration: 5000, //
+        });
+      } finally {
+        setIsSending(false); // Hide spinner after sending ends
       }
       let form = {
         from: watch('from'),
@@ -89,25 +121,21 @@ function ComposeMail({ toggleIsCompose, composeDraft }) {
       if (form.to !== '' || form.subject !== '' || form.message !== '') {
         dispatch(saveDraftAction(form));
         
-        // toast({
-        //   variant: "destructive",
-        //   title: "email saved as draft.",
-        // });
+  
       }
     } else {
       // the following is used to update the existing draft
       dispatch(updateDraftAction(composeDraft.id, form));
-    
-      // toast({
-      //     variant: "destructive",
-      //     title: "email updated as draft.",
-      //   });
+  
     }
     toggleIsCompose();
   };
   
  
   return (
+    isSending ? (
+      <ClipLoader type="ClipLoader" size={150} color="#0000ff" height={100} width={100} />
+    ) :
     <form onSubmit={handleSubmit(onSubmit)} className={styles.compose}>
       <div className={styles.header}>
         <h5>New Message</h5>
@@ -128,7 +156,7 @@ function ComposeMail({ toggleIsCompose, composeDraft }) {
           readOnly
         />
       </div>
-
+         <Toaster />
       <div className={styles.inpGroup}>
         <label htmlFor='to'>To:</label>
         <input

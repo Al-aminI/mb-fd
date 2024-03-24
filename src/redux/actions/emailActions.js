@@ -38,6 +38,8 @@ import {
   deleteEmail,
 
 } from "../../api";
+import  toast, { Toaster } from 'react-hot-toast';
+import { ClipLoader } from 'react-spinners';
 
 
 export const getEmailsAction = () => async (dispatch, getState) => {
@@ -51,6 +53,8 @@ export const getEmailsAction = () => async (dispatch, getState) => {
 };
 
 export const sendEmailAction = (form) => async (dispatch, getState) => {
+  // const [isSending, setIsSending] = useState(true);
+
   dispatch({ type: SEND_EMAIL_REQUEST });
 
    // Create a new FormData instance
@@ -68,13 +72,32 @@ export const sendEmailAction = (form) => async (dispatch, getState) => {
        formData.append(key, form[key]);
      }
    }
-   
+  
+    
+  
   try {
     const response = await sendEmail(getState().userReducer.token, formData);
+    toast.success('Email sent successfully!', {
+      position: "top-left", // Adjust position as needed
+      autoClose: 50000, // Close toast after 5 seconds
+      hideProgressBar: false, // Hide progress bar
+      closeOnClick: true, // Close toast on click
+      duration: 5000, //
+    });
+    
     dispatch({ type: FETCH_EMAILS_SUCCESS, payload: response.data.email });
   } catch (error) {
+    console.error('Error sending email:', error);
+    toast.error('Failed to sending email!', {
+      position: "top-left", // Adjust position as needed
+      autoClose: 50000, // Close toast after 5 seconds
+      hideProgressBar: false, // Hide progress bar
+      closeOnClick: true, // Close toast on click
+      duration: 5000, //
+    });
     dispatch({ type: FETCH_EMAILS_ERROR, error });
   }
+ 
 };
 
 export const saveDraftAction = (form) => async (dispatch, getState) => {
@@ -166,3 +189,4 @@ export const deleteEmailAction = (id) => async (dispatch, getState) => {
     dispatch({ type: DELETE_EMAIL_ERROR, error });
   }
 };
+<Toaster />

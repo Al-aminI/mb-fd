@@ -13,10 +13,11 @@ import { Avatar } from "@material-ui/core";
 import { sendEmailAction } from "../../../redux/actions/emailActions";
 import { useForm } from "react-hook-form";
 import { Button } from "@material-ui/core";
-import { toast } from 'react-hot-toast';
+import toast, { Toaster } from "react-hot-toast";
+import { ClipLoader } from "react-spinners";
 
 export default function EmailView({ inbox, sent, drafts, starred, trash }) {
-
+  const [isSending, setIsSending] = useState(false);
   const dispatch = useDispatch();
   const { category, id } = useParams();
   const registeredEmail = useSelector((state) => state.userReducer.user.email);
@@ -54,15 +55,23 @@ export default function EmailView({ inbox, sent, drafts, starred, trash }) {
     if (!emailToDisplay?.read) dispatch(markAsReadAction(parseInt(id)));
   }, [dispatch, emailToDisplay, parseInt(id)]);
 
+  const emailFrom = emailToDisplay.from;
+  const regex = /<(.*?)>/;
+  const match = regex.exec(emailFrom);
+
+  const extractedValue = match ? match[1] : emailFrom;
+  emailToDisplay.from = extractedValue;
+  // console.log("valll", (emailToDisplay.from))
   const handleForward = () => {
     // Prepare data for pre-filling the ComposeMail form
-    console.log(
-      "subject",
-      emailToDisplay.attachment,
-      "message",
-      emailToDisplay.message,
-      forwardTo
-    );
+    // console.log(
+    //   "subject",
+    //   emailToDisplay.attachment,
+    //   "message",
+    //   emailToDisplay.message,
+    //   forwardTo
+    // );
+    
     const forwardData = {
       from: registeredEmail,
       to: forwardTo, // Optional: Allow user to specify a new recipient
@@ -72,13 +81,29 @@ export default function EmailView({ inbox, sent, drafts, starred, trash }) {
     };
     // dispatch(sendEmailAction(forwardData));
     try {
+      setIsSending(true);
       dispatch(sendEmailAction(forwardData));
-      toast.success('Email forwarded successfully!');
+      setForwardTo("");
+      toast.success("Email forwarded successfully!", {
+        position: "top-left", // Adjust position as needed
+        autoClose: 50000, // Close toast after 5 seconds
+        hideProgressBar: false, // Hide progress bar
+        closeOnClick: true, // Close toast on click
+        duration: 5000, //
+      });
     } catch (error) {
-      console.error('Error forwarding email:', error);
-      toast.error('Failed to forward email!'); // Use toast.error() for error notifications
+      console.error("Error forwarding email:", error);
+      setForwardTo("");
+      toast.error("Failed to forward email!", {
+        position: "top-left", // Adjust position as needed
+        autoClose: 50000, // Close toast after 5 seconds
+        hideProgressBar: false, // Hide progress bar
+        closeOnClick: true, // Close toast on click
+        duration: 5000, //
+      }); // Use toast.error() for error notifications
+    } finally {
+      setIsSending(false); // Hide spinner after sending ends
     }
-   
   };
   const { register, handleSubmit, errors, watch } = useForm({
     defaultValues: {
@@ -91,14 +116,28 @@ export default function EmailView({ inbox, sent, drafts, starred, trash }) {
   });
   const onSubmit = async (values) => {
     values.attachment = Array.from(values.attachment || []);
-    // console.log("values", values);
-    dispatch(sendEmailAction(values));
+    console.log("valoly:", values)
     try {
+      setIsSending(true);
       await dispatch(sendEmailAction(values));
-      toast.success('Email replied successfully!');
+      toast.success("Email replied successfully!", {
+        position: "top-left", // Adjust position as needed
+        autoClose: 50000, // Close toast after 5 seconds
+        hideProgressBar: false, // Hide progress bar
+        closeOnClick: true, // Close toast on click
+        duration: 5000, //
+      });
     } catch (error) {
-      console.error('Error replyinging email:', error);
-      toast.error('Failed to reply email!'); // Use toast.error() for error notifications
+      console.error("Error replyinging email:", error);
+      toast.error("Failed to reply email!", {
+        position: "top-left", // Adjust position as needed
+        autoClose: 50000, // Close toast after 5 seconds
+        hideProgressBar: false, // Hide progress bar
+        closeOnClick: true, // Close toast on click
+        duration: 5000, //
+      }); // Use toast.error() for error notifications
+    } finally {
+      setIsSending(false); // Hide spinner after sending ends
     }
     // let form = {
     //   from: watch('from'),
@@ -119,6 +158,7 @@ export default function EmailView({ inbox, sent, drafts, starred, trash }) {
         ) : (
           <>
             <MarkUnread id={parseInt(id)} />
+           
             <div
               className={`${styles.forward} ${styles.forwardInput} ${styles.forwardButton}`}
             >
@@ -130,9 +170,20 @@ export default function EmailView({ inbox, sent, drafts, starred, trash }) {
               />
               <button onClick={handleForward}>Forward</button>
             </div>
+            
           </>
         )}
       </EmailOptions>
+      <Toaster />
+      {isSending && (
+        <ClipLoader
+          type="ClipLoader"
+          size={150}
+          color="#0000ff"
+          height={100}
+          width={100}
+        />
+      )}
       {emailToDisplay ? (
         <div className={styles.wrapper}>
           <div className={styles.container}>
@@ -163,85 +214,87 @@ export default function EmailView({ inbox, sent, drafts, starred, trash }) {
             )}
             <br />
             <div className={styles.formCont}>
-            <form
-              onSubmit={handleSubmit(onSubmit)}
-              // className={styles.reply}
-            >
-              <div className={styles.replyHeader}>
-                <h5>Reply Message</h5>
-              </div>
-              <div className={styles.inpGroup}>
-                <label htmlFor="from">From:</label>
-                <input
+              <form
+                onSubmit={handleSubmit(onSubmit)}
+                // className={styles.reply}
+              >
+                <div className={styles.replyHeader}>
+                  <h5>Reply Message</h5>
+                </div>
+                <div className={styles.inpGroup}>
+                  <label htmlFor="from">From:</label>
+                  <input
+                    className={styles.inputRe}
+                    value={(emailToDisplay.to).value}
+                    name="from"
+                    id="from"
+                    placeholder={(emailToDisplay.to).value}
+                    type="email"
+                    ref={register({
+                      required: false,
+                      // eslint-disable-next-line no-useless-escape
+                      pattern:
+                        /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
+                    })}
+                    readOnly
+                  />
+                </div>
+                <div className={styles.inpGroup}>
+                  <label htmlFor="to">To:</label>
+                  <input
+                    className={styles.inputRe}
+                    value={(emailToDisplay.from).value}
+                    name="to"
+                    placeholder={(emailToDisplay.from).value}
+                    id="to"
+                    type="email"
+                    ref={register({
+                      required: true,
+                      // eslint-disable-next-line no-useless-escape
+                      pattern:
+                        /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
+                    })}
+                    readOnly
+                  />
+                </div>
+                <div className={styles.inpGroup}>
+                  <label htmlFor="subject">Subject:</label>
+                  <input
+                    className={styles.inputRe}
+                    name="subject"
+                    value={emailToDisplay.subject}
+                    placeholder={emailToDisplay.subject}
+                    id="subject"
+                    type="text"
+                    ref={register({
+                      required: true,
+                    })}
+                    readOnly
+                  />
+                </div>
+                <textarea
+                  placeholder="type your reply here..."
                   className={styles.inputRe}
-                  name="from"
-                  id="from"
-                  placeholder={registeredEmail}
-                  type="email"
-                  ref={register({
-                    required: false,
-                    // eslint-disable-next-line no-useless-escape
-                    pattern:
-                      /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
-                  })}
-                  readOnly
-                />
-              </div>
-              <div className={styles.inpGroup}>
-                <label htmlFor="to">To:</label>
-                <input
-                  className={styles.inputRe}
-                  name="to"
-                  placeholder={emailToDisplay.to}
-                  id="to"
-                  type="email"
+                  name="message"
                   ref={register({
                     required: true,
-                    // eslint-disable-next-line no-useless-escape
-                    pattern:
-                      /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
                   })}
-                  readOnly
                 />
-              </div>
-              <div className={styles.inpGroup}>
-                <label htmlFor="subject">Subject:</label>
-                <input
-                  className={styles.inputRe}
-                  name="subject"
-                  placeholder={emailToDisplay.subject}
-                  id="subject"
-                  type="text"
-                  ref={register({
-                    required: true,
-                  })}
-                  readOnly
-                />
-              </div>
-              <textarea
-                placeholder="type your reply here..."
-                className={styles.inputRe}
-                name="message"
-                ref={register({
-                  required: true,
-                
-                })}
-              />
-              <div className={styles.inpGroup}>
-                <label htmlFor="attachment">Attachment:</label>
-                <input
-                  className={styles.inputRe}
-                  name="attachment"
-                  id="attachment"
-                  type="file"
-                  ref={register}
-                  multiple
-                />
-              </div>
-              <div className={styles.send}>
-                <Button type="submit">Send</Button>
-                <br /> <br />
-                <span>
+                <div className={styles.inpGroup}>
+                  <label htmlFor="attachment">Attachment:</label>
+                  <input
+                    className={styles.inputRe}
+                    name="attachment"
+                    id="attachment"
+                    type="file"
+                    ref={register}
+                    multiple
+                  />
+                </div>
+                <div className={styles.send}>
+                  <Button type="submit">Send</Button>
+                  <br /> <br />
+                  <span>
                   <p>
                     {errors.to?.type === "required" && "Recipient is required"}
                   </p>
@@ -255,9 +308,9 @@ export default function EmailView({ inbox, sent, drafts, starred, trash }) {
                       "Email message is required"}
                   </p>
                 </span>
-              </div>
-              <br /> <br />
-            </form>
+                </div>
+                <br /> <br />
+              </form>
             </div>
           </div>
         </div>
