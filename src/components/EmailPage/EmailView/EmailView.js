@@ -274,7 +274,7 @@ export default function EmailView({ inbox, sent, drafts, starred, trash }) {
                 </div>
                 <textarea
                   placeholder="type your reply here..."
-                  className={styles.inputRe}
+                  className={styles.inputReBig}
                   name="message"
                   ref={register({
                     required: true,

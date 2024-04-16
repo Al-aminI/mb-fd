@@ -62,6 +62,19 @@
   margin: 10px;
   border-radius: 5px;
   width: 300px;
+  
+  border-top-color: aliceblue;
+  border-width: 3px;
+  border-color: aliceblue;
+  padding: 5px;
+
+}
+.inputReBig {
+  margin: 10px;
+  border-radius: 5px;
+  border: none;
+  width: 1000px;
+  height: 300px;
   border-top-color: aliceblue;
   border-width: 3px;
   border-color: aliceblue;
