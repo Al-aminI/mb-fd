@@ -16,6 +16,8 @@ export default function EmailCategoryItem({
 }) {
   const history = useHistory();
   const { category } = useParams();
+  console.log(typeof message); // Should output "string"
+
   // console.log(category, id, title, subject, message, date, isRead, isStarred, isTrash, isDraft)
   // this function converts the date object to a sweet UI date string
   const dateToString = (dateObj) => {
@@ -65,10 +67,11 @@ export default function EmailCategoryItem({
         }>
         <h4>{title}</h4>
         &nbsp;&nbsp;
+        
         <p>
           <span>{subject}</span>
           &nbsp;&nbsp;
-          {message}
+          <p dangerouslySetInnerHTML={{ __html: message ? message.slice(0, 100) : ' ' }}></p>
         </p>
         &nbsp;&nbsp;
         <span>{dateToString(date)}</span>

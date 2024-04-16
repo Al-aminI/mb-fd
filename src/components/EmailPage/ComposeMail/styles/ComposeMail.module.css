@@ -1,8 +1,8 @@
 .compose {
-  width: 350px;
+  width: 500px;
   height: 420px;
   position: fixed;
-  bottom: 0;
+  top: 20px;
   right: 11%;
   background-color: #f1fff3;
   border: none;
@@ -47,7 +47,7 @@
 }
 
 .compose > textarea {
-  width: 350px;
+  width: 500px;
   height: 230px;
   padding: 7px 15px;
   border: none;
@@ -72,7 +72,16 @@
 .send > button:hover {
   background-color: #4b8ef9 !important;
 }
-
+.ccBccRow {
+  width: 100px;
+  height: 40px;
+ 
+}
+.ccBccRow > input {
+  width: 90px;
+  height: 25px;
+  
+}
 .send > span {
   color: #ff0000;
   font-size: 13px;
